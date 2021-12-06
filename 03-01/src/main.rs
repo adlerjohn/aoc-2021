@@ -9,23 +9,28 @@ fn main() {
     let data = fs::read_to_string(input).expect("unable to read file");
     let lines = data.split("\n").collect::<Vec<&str>>();
 
-    let mut position = 0u64;
-    let mut depth = 0u64;
-    let mut aim = 0u64;
-    for line in lines {
-        let l = line.split_whitespace().collect::<Vec<&str>>();
-        let val = l[1].parse::<u64>().unwrap();
-        match l[0] {
-            "forward" => {
-                position += val;
-                depth += aim * val;
+    let mut gamma = 0u64;
+    let mut epsilon = 0u64;
+    // Note: input is 12 bits
+    for i in 0..12 {
+        let mut count_ones = 0u64;
+        for line in &lines {
+            let bit = line.chars().nth(i).unwrap();
+            match bit {
+                '0' => count_ones += 0,
+                '1' => count_ones += 1,
+                _ => panic!("bad input"),
             }
-            "down" => aim += val,
-            "up" => aim -= val,
-            _ => panic!("bad input"),
         }
-        println!("{} {}", l[0], val);
+        let count_zeroes = lines.len() as u64 - count_ones;
+        // TODO what if they're equal? Doesn't happen in the input.
+        // Only add non-zero bit
+        if count_zeroes > count_ones {
+            epsilon = epsilon + (1 << (11 - i));
+        } else {
+            gamma = gamma + (1 << (11 - i));
+        }
     }
 
-    println!("{}", position * depth);
+    println!("{}", gamma * epsilon);
 }
