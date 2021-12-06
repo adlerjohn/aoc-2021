@@ -9,14 +9,21 @@ fn main() {
     let data = fs::read_to_string(input).expect("unable to read file");
     let lines = data.split_whitespace().collect::<Vec<&str>>();
 
-    let mut count = 0;
-    let mut last = lines[0].parse::<u64>().unwrap();
-    for line in lines {
-        let val = line.parse::<u64>().unwrap();
-        if val > last {
+    let mut count = 0u64;
+    let mut last = u64::MAX;
+    for (i, _) in lines.iter().enumerate() {
+        // Break if there are insufficient elements left
+        if i > lines.len() - 3 {
+            break;
+        }
+        let mut sum = 0u64;
+        for j in 0..3 {
+            sum = sum + lines[i + j].parse::<u64>().unwrap();
+        }
+        if sum > last {
             count = count + 1;
         }
-        last = val;
+        last = sum;
     }
 
     println!("{}", count);
