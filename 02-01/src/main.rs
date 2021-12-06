@@ -7,24 +7,21 @@ fn main() {
         .get_matches();
     let input = matches.value_of("input").unwrap_or("input");
     let data = fs::read_to_string(input).expect("unable to read file");
-    let lines = data.split_whitespace().collect::<Vec<&str>>();
+    let lines = data.split("\n").collect::<Vec<&str>>();
 
-    let mut count = 0u64;
-    let mut last = u64::MAX;
-    for (i, _) in lines.iter().enumerate() {
-        // Break if there are insufficient elements left
-        if i > lines.len() - 3 {
-            break;
+    let mut position = 0u64;
+    let mut depth = 0u64;
+    for line in lines {
+        let l = line.split_whitespace().collect::<Vec<&str>>();
+        let val = l[1].parse::<u64>().unwrap();
+        match l[0] {
+            "forward" => position += val,
+            "down" => depth += val,
+            "up" => depth -= val,
+            _ => panic!("bad input"),
         }
-        let mut sum = 0u64;
-        for j in 0..3 {
-            sum = sum + lines[i + j].parse::<u64>().unwrap();
-        }
-        if sum > last {
-            count = count + 1;
-        }
-        last = sum;
+        println!("{} {}", l[0], val);
     }
 
-    println!("{}", count);
+    println!("{}", position * depth);
 }
