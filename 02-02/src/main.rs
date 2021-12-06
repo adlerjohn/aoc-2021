@@ -11,13 +11,17 @@ fn main() {
 
     let mut position = 0u64;
     let mut depth = 0u64;
+    let mut aim = 0u64;
     for line in lines {
         let l = line.split_whitespace().collect::<Vec<&str>>();
         let val = l[1].parse::<u64>().unwrap();
         match l[0] {
-            "forward" => position += val,
-            "down" => depth += val,
-            "up" => depth -= val,
+            "forward" => {
+                position += val;
+                depth += aim * val;
+            }
+            "down" => aim += val,
+            "up" => aim -= val,
             _ => panic!("bad input"),
         }
         println!("{} {}", l[0], val);
